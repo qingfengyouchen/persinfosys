@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TitlequeryMapper">
+    
+    <!--表名 -->
+    <sql id="tableName">
+        TB_USERINFO
+    </sql>
+    
+    <!-- 字段 -->
+    <sql id="Field">
+        ID_NUM,
+        USER_NAME,
+        USER_SEX,
+        USER_NATION,
+        ORIGIN_PLACE,
+        BIRTH_PLACE,
+        BIRTH_DATE,
+        USER_UNIT,
+        USER_DEPART,
+        USER_POLIT,
+        PARTY_DATE,
+        NATION_PARTY,
+        WORK_DATE,
+        HEALTH_STATUS,
+        MARRIAGE_STATUS,
+        INIT_EDUCATION,
+        INIT_DEGREE,
+        INIT_MAJOR,
+        GRADU_UNIVERS,
+        GRADU_DATE,
+        STUDY_TYPE,
+        JOIN_TYPE,
+        JOIN_DATE,
+        USER_STATUS,
+        ADMIN_LEVEL,
+        USER_POST
+    </sql>
+    
+    <!-- 字段值 -->
+    <sql id="FieldValue">
+        #{ID_NUM},
+        #{USER_NAME},
+        #{USER_SEX},
+        #{USER_NATION},
+        #{ORIGIN_PLACE},
+        #{BIRTH_PLACE},
+        #{BIRTH_DATE},
+        #{USER_UNIT},
+        #{USER_DEPART},
+        #{USER_POLIT},
+        #{PARTY_DATE},
+        #{NATION_PARTY},
+        #{WORK_DATE},
+        #{HEALTH_STATUS},
+        #{MARRIAGE_STATUS},
+        #{INIT_EDUCATION},
+        #{INIT_DEGREE},
+        #{INIT_MAJOR},
+        #{GRADU_UNIVERS},
+        #{GRADU_DATE},
+        #{STUDY_TYPE},
+        #{JOIN_TYPE},
+        #{JOIN_DATE},
+        #{USER_STATUS},
+        #{ADMIN_LEVEL},
+        #{USER_POST}
+    </sql>
+    
+    <!-- 角色表 -->
+    <sql id="roleTableName">
+        SYS_ROLE
+    </sql>
+    
+      <!-- 会员列表（默认） -->
+    <select id="userlistPage" parameterType="page" resultType="pd">
+        select  
+              <include refid="Field"></include>
+        from <include refid="tableName"></include>
+        where 1=1
+        <if test="pd.keywords != null and pd.keywords!= ''"><!-- 关键词检索 -->
+            and (
+                USER_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+                )
+        </if>
+        order by USER_NAME
+    </select>
+    
+     <!-- 会员列表（根据职称查询的） -->
+    <select id="userlistPage2" parameterType="page" resultType="pd">
+        select  
+              <include refid="Field"></include>
+        from <include refid="tableName"></include>
+        where ID_NUM in
+        	(select ID_NUM from tb_title where TITLE_LEVEL = #{pd.titlelevel})
+        
+    </select>
+    
+    <!-- 全部会员 -->
+    <select id="listAllUser" parameterType="pd" resultType="pd">
+        select 
+              <include refid="Field"></include>
+        from <include refid="tableName"></include>
+        where 1=1
+        <if test="keywords != null and keywords!= ''"><!-- 关键词检索 -->
+            and (
+                USER_NAME LIKE CONCAT(CONCAT('%', #{keywords}),'%')
+                )
+        </if>
+        <if test="titlelevel!=null and titlelevel!=''"><!-- 职称检索 -->
+            and (select ID_NUM from tb_title where TITLE_LEVEL = #{pd.title_level})
+        </if>
+        order by USER_NAME
+    </select>
+    
+   
+</mapper>

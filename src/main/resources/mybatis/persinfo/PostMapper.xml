@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PostMapper">
+    
+    <!--表名 -->
+    <sql id="tableName">
+        TB_POST
+    </sql>
+    
+    <!-- 字段 -->
+    <sql id="Field">
+        ID_NUM,
+        USER_NAME,
+        APPOINT_DATE,
+        POST_TYPE,
+        POST_LEVEL,
+        APPOINT_UNIT
+    </sql>
+    
+    <sql id="Field2">
+    	a.*,b.USER_UNIT
+    </sql>
+    
+    <sql id="tableName2">
+    	tb_post a,tb_userinfo b 
+    </sql>
+    
+    <!-- 字段值 -->
+    <sql id="FieldValue">
+        #{ID_NUM},
+        #{USER_NAME},
+        #{APPOINT_DATE},
+        #{POST_TYPE},
+        #{POST_LEVEL},
+        #{APPOINT_UNIT}
+    </sql>
+    
+    <!-- 角色表 -->
+    <sql id="roleTableName">
+        SYS_ROLE
+    </sql>
+    
+    
+    <!-- 列出某角色下的所有会员 -->
+    <select id="listAllUserInfoByUserUnit"  parameterType="pd" resultType="pd" >
+        select 
+            <include refid="Field"></include>
+        from 
+        <include refid="tableName"></include>
+        where 
+            USER_UNIT = #{USER_UNIT}
+    </select>
+    
+    <!-- 会员列表 -->
+    <select id="postlistPage" parameterType="page" resultType="pd">
+        select  
+              <include refid="Field2"></include>
+        from
+        	 <include refid="tableName2"></include>
+        where 
+        	a.ID_NUM=b.ID_NUM 
+        <if test="pd.keywords != null and pd.keywords!= ''"><!-- 关键词检索 -->
+            and (
+                a.USER_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+                )
+        </if>
+        <if test="pd.userunit!=null and pd.userunit!=''"><!-- 单位检索 -->
+            and b.USER_UNIT = #{pd.userunit} 
+        </if>
+        order by USER_NAME
+    </select>
+    
+    <!-- 通过USERNAME获取数据 -->
+    <select id="findByUsername" parameterType="pd" resultType="pd">
+        select 
+            <include refid="Field"></include>
+        from 
+            <include refid="tableName"></include>
+        where 
+            USER_NAME = #{USER_NAME}
+    </select>
+    
+    <!-- 新增会员 -->
+    <insert id="saveU" parameterType="pd">
+        insert into <include refid="tableName"></include> (
+            <include refid="Field"></include>
+        ) values (
+            <include refid="FieldValue"></include>
+        )
+    </insert>
+    
+    <!-- 删除用户 -->
+    <delete id="deleteU" parameterType="pd">
+        delete from <include refid="tableName"></include> 
+        where 
+             ID_NUM = #{ID_NUM} and APPOINT_DATE = #{APPOINT_DATE}
+    </delete>
+    
+    <!-- 修改 -->
+    <update id="editU" parameterType="pd">
+        update  <include refid="tableName"></include>
+        set POST_TYPE = #{POST_TYPE},
+            POST_LEVEL = #{POST_LEVEL},
+            APPOINT_UNIT = #{APPOINT_UNIT}
+            
+        where 
+            ID_NUM = #{ID_NUM} and APPOINT_DATE = #{APPOINT_DATE}
+    </update>
+    
+    <!-- 通过ID获取数据 -->
+    <select id="findByUiId" parameterType="pd" resultType="pd">
+        select 
+            <include refid="Field"></include>
+        from 
+            <include refid="tableName"></include>
+        where 
+            ID_NUM = #{ID_NUM} and APPOINT_DATE = #{APPOINT_DATE} 
+    </select>
+    
+    <!-- 全部会员 -->
+    <select id="listAllUser" parameterType="pd" resultType="pd">
+        select 
+              <include refid="Field2"></include>
+        from <include refid="tableName2"></include>
+        where a.ID_NUM=b.ID_NUM
+        <if test="keywords != null and keywords!= ''"><!-- 关键词检索 -->
+            and (
+                a.USER_NAME LIKE CONCAT(CONCAT('%', #{keywords}),'%')
+                )
+        </if>
+        <if test="userunit!=null and userunit!=''"><!-- 单位检索 -->
+            and b.USER_UNIT = #{userunit} 
+        </if>
+        order by USER_NAME
+    </select>
+    
+    <!-- 批量删除用户 -->
+    <delete id="deleteAllU" parameterType="String">
+        delete from <include refid="tableName"></include>
+        where 
+            ID_NUM in
+               <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                  #{item}
+             </foreach>
+    </delete>
+    
+    <!-- 获取总数 -->
+    <select id="getUserInfoCount" parameterType="String" resultType="pd">
+        select 
+            count(ID_NUM) userInfoCount
+        from 
+        <include refid="tableName"></include>
+    </select>
+</mapper>

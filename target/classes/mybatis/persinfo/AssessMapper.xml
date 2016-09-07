@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AssessMapper">
+    
+    <!--表名 -->
+    <sql id="tableName">
+        TB_ASSESS
+    </sql>
+    
+    <!-- 字段 -->
+    <sql id="Field">
+        ID_NUM,
+        USER_NAME,
+        ASSESS_DATE,
+        ASSESS_RESULT
+    </sql>
+    
+    <!-- 字段值 -->
+    <sql id="FieldValue">
+        #{ID_NUM},
+        #{USER_NAME},
+        #{ASSESS_DATE},
+        #{ASSESS_RESULT}
+    </sql>
+    
+    <sql id="Field2">
+    	a.*,b.USER_UNIT
+    </sql>
+    
+    <sql id="tableName2">
+    	tb_assess a,tb_userinfo b 
+    </sql>
+    
+    <!-- 角色表 -->
+    <sql id="roleTableName">
+        SYS_ROLE
+    </sql>
+    
+    <!-- 获取考核列表 -->
+    <select id="userlistPage" parameterType="page" resultType="pd">
+        select 
+            <include refid="Field2"></include>
+        from 
+        <include refid="tableName2"></include>
+        where
+            a.ID_NUM=b.ID_NUM
+        <if test="pd.keywords != null and pd.keywords!= ''"><!-- 关键词检索 -->
+            and (
+                b.USER_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+                )
+        </if>
+        <if test="pd.userunit!=null and pd.userunit!=''"><!-- 单位检索 -->
+            and b.USER_UNIT = #{pd.userunit} 
+        </if>
+        <if test="pd.assessstatus!=null and pd.assessstatus!=''"><!-- 状态检索 -->
+            and b.USER_STATUS = #{pd.assessstatus} 
+        </if>
+        <if test="pd.assess_date!=null and pd.assess_date!=''"><!-- 考核时间 -->
+            and a.ASSESS_DATE = #{pd.assess_date} 
+        </if>
+        <if test="pd.assessresult!=null and pd.assessresult!=''"><!-- 考核结果 -->
+            and a.ASSESS_RESULT = #{pd.assessresult} 
+        </if>
+    </select>
+    
+    <!-- 获取考核列表 -->
+    <select id="listAllAssessByUserUnit"  parameterType="pd" resultType="pd" >
+        select 
+            <include refid="Field2"></include>
+        from 
+        <include refid="tableName2"></include>
+        where
+        	a.ID_NUM=b.ID_NUM
+        <if test="pd.keywords != null and pd.keywords!= ''"><!-- 关键词检索 -->
+            and (
+                b.USER_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+                )
+        </if>
+        <if test="pd.userunit!=null and pd.userunit!=''"><!-- 单位检索 -->
+            and b.USER_UNIT = #{pd.userunit} 
+        </if>
+        <if test="pd.assessstatus!=null and pd.assessstatus!=''"><!-- 状态检索 -->
+            and b.USER_STATUS = #{pd.assessstatus} 
+        </if>
+        <if test="pd.assess_date!=null and pd.assess_date!=''"><!-- 考核时间 -->
+            and a.ASSESS_DATE = #{pd.assess_date} 
+        </if>
+        <if test="pd.assessresult!=null and pd.assessresult!=''"><!-- 考核结果 -->
+            and a.ASSESS_RESULT = #{pd.assessresult} 
+        </if>
+    </select>
+    
+    <!-- 全部会员 -->
+    <select id="listAllAssess" parameterType="pd" resultType="pd">
+                select 
+            <include refid="Field2"></include>
+        from 
+        <include refid="tableName2"></include>
+        where
+        	a.ID_NUM=b.ID_NUM
+        <if test="keywords != null and keywords!= ''"><!-- 关键词检索 -->
+            and (
+                b.USER_NAME LIKE CONCAT(CONCAT('%', #{keywords}),'%')
+                )
+        </if>
+        <if test="userunit!=null and userunit!=''"><!-- 单位检索 -->
+            and b.USER_UNIT = #{userunit} 
+        </if>
+        <if test="assessstatus!=null and assessstatus!=''"><!-- 状态检索 -->
+            and b.USER_STATUS = #{assessstatus} 
+        </if>
+        <if test="assess_date!=null and assess_date!=''"><!-- 考核时间 -->
+            and a.ASSESS_DATE = #{assess_date} 
+        </if>
+        <if test="assessresult!=null and assessresult!=''"><!-- 考核结果 -->
+            and a.ASSESS_RESULT = #{assessresult} 
+        </if>
+    </select>
+    <!-- 通过ID获取数据 -->
+    <select id="findByUiId" parameterType="pd" resultType="pd">
+        select 
+            <include refid="Field"></include>
+        from 
+            <include refid="tableName"></include>
+        where 
+            ID_NUM = #{ID_NUM} and ASSESS_DATE = #{ASSESS_DATE}
+    </select>
+    
+    <!-- 新增会员 -->
+    <insert id="saveU" parameterType="pd">
+        insert into <include refid="tableName"></include> (
+            <include refid="Field"></include>
+        ) values (
+            <include refid="FieldValue"></include>
+        )
+    </insert>
+    
+    <!-- 修改 -->
+    <update id="editU" parameterType="pd">
+        update  <include refid="tableName"></include>
+        set ASSESS_RESULT = #{ASSESS_RESULT}
+        where 
+            ID_NUM = #{ID_NUM} and ASSESS_DATE = #{ASSESS_DATE}
+    </update>
+    
+    <!-- 删除用户 -->
+    <delete id="deleteU" parameterType="pd">
+        delete from <include refid="tableName"></include> 
+        where 
+            ID_NUM = #{ID_NUM} and ASSESS_DATE = #{ASSESS_DATE}
+    </delete>
+    
+</mapper>
