@@ -240,6 +240,28 @@ public class RetirementController extends BaseController {
 		return AppUtil.returnObject(pd, map);
 	}
 	
+	/**用户详情
+	 * @param out
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/goDetailR")
+	public ModelAndView goDetailR(){
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		try {
+			pd = retirementInfoService.findByNumber(pd); //根据ID读取			
+			mv.setViewName("retirementinfo/retirement/retirementinfo_detail");
+			mv.addObject("msg", "editU");//由于详细页面无需后台操作，此处msg随便写就行
+			mv.addObject("pd", pd);
+		} catch (Exception e) {
+			logger.error(e.toString(), e);
+		}
+		return mv;
+	}
+	
 	/**导出会员信息到excel
 	 * @return
 	 */

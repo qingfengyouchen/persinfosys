@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RetirementInfoMapper">
+    
+    <!--表名 -->
+    <sql id="tableName">
+        TB_RETIRE
+    </sql>
+    
+    <!-- 字段 -->
+    <sql id="Field">
+        ID_NUM,
+        USER_NAME,        
+        USER_UNIT,       
+        RETIRE_DATE,
+        USER_STATUS
+    </sql>
+    
+    <!-- 字段值 -->
+    <sql id="FieldValue">
+        #{ID_NUM},
+        #{USER_NAME},
+        #{USER_UNIT},
+        #{RETIRE_DATE},
+        #{USER_STATUS}
+    </sql>
+
+    <!-- 离退休列表 -->
+    <select id="listPageRetirement" parameterType="page" resultType="pd">
+        select  
+              <include refid="Field"></include>
+        from <include refid="tableName"></include>
+        where 1=1
+        <if test="pd.keywords != null and pd.keywords!= ''"><!-- 关键词检索 -->
+            and (
+                USER_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+                )
+        </if>
+        <if test="pd.userunit!=null and pd.userunit!=''"><!-- 单位检索 -->
+            and USER_UNIT = #{pd.userunit} 
+        </if>
+        <if test="pd.userstatus!=null and pd.userstatus!=''"><!-- 状态检索 -->
+            and USER_STATUS = #{pd.userstatus} 
+        </if>
+        order by USER_NAME
+    </select>
+    
+    <!-- 通过USERNAME获取数据 -->
+    <select id="findByUsername" parameterType="pd" resultType="pd">
+        select 
+            <include refid="Field"></include>
+        from 
+            <include refid="tableName"></include>
+        where 
+            USER_NAME = #{USER_NAME}
+    </select>
+    
+    <!-- 新增会员 -->
+    <insert id="saveR" parameterType="pd">
+        insert into <include refid="tableName"></include> (
+            <include refid="Field"></include>
+        ) values (
+            <include refid="FieldValue"></include>
+        )
+    </insert>
+    
+    <!-- 删除用户 -->
+    <delete id="deleteR" parameterType="pd">
+        delete from <include refid="tableName"></include> 
+        where 
+            ID_NUM = #{ID_NUM}
+    </delete>
+    
+    <!-- 修改 -->
+    <update id="editR" parameterType="pd">
+        update  <include refid="tableName"></include>
+        set USER_NAME               = #{USER_NAME},            
+            USER_UNIT               = #{USER_UNIT},
+            USER_STATUS             = #{USER_STATUS},
+            RETIRE_DATE             = #{RETIRE_DATE}
+        where 
+            ID_NUM = #{ID_NUM}
+    </update>
+    
+    <!-- 通过ID获取数据 -->
+    <select id="findByNumber" parameterType="pd" resultType="pd">
+        select 
+            <include refid="Field"></include>
+        from 
+            <include refid="tableName"></include>
+        where 
+            ID_NUM = #{ID_NUM}
+    </select>
+
+    <!-- 批量删除用户 -->
+    <delete id="deleteAllR" parameterType="String">
+        delete from <include refid="tableName"></include>
+        where 
+            ID_NUM in
+               <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                  #{item}
+             </foreach>
+    </delete>
+    
+    <!-- 获取总数 -->
+    <select id="getRetirementInfoCount" parameterType="String" resultType="pd">
+        select 
+            count(ID_NUM) userInfoCount
+        from 
+        <include refid="tableName"></include>
+    </select>
+</mapper>

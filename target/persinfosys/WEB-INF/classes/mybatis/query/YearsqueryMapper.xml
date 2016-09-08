@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YearsqueryMapper">
+    
+    <!--表名 -->
+    <sql id="tableName">
+        TB_USERINFO
+    </sql>
+    
+    <!-- 字段 -->
+    <sql id="Field">
+        ID_NUM,
+        USER_NAME,
+        USER_SEX,
+        USER_NATION,
+        ORIGIN_PLACE,
+        BIRTH_PLACE,
+        BIRTH_DATE,
+        USER_UNIT,
+        USER_DEPART,
+        USER_POLIT,
+        PARTY_DATE,
+        NATION_PARTY,
+        WORK_DATE,
+        HEALTH_STATUS,
+        MARRIAGE_STATUS,
+        INIT_EDUCATION,
+        INIT_DEGREE,
+        INIT_MAJOR,
+        GRADU_UNIVERS,
+        GRADU_DATE,
+        STUDY_TYPE,
+        JOIN_TYPE,
+        JOIN_DATE,
+        USER_STATUS,
+        ADMIN_LEVEL,
+        USER_POST
+    </sql>
+    
+    <!-- 字段值 -->
+    <sql id="FieldValue">
+        #{ID_NUM},
+        #{USER_NAME},
+        #{USER_SEX},
+        #{USER_NATION},
+        #{ORIGIN_PLACE},
+        #{BIRTH_PLACE},
+        #{BIRTH_DATE},
+        #{USER_UNIT},
+        #{USER_DEPART},
+        #{USER_POLIT},
+        #{PARTY_DATE},
+        #{NATION_PARTY},
+        #{WORK_DATE},
+        #{HEALTH_STATUS},
+        #{MARRIAGE_STATUS},
+        #{INIT_EDUCATION},
+        #{INIT_DEGREE},
+        #{INIT_MAJOR},
+        #{GRADU_UNIVERS},
+        #{GRADU_DATE},
+        #{STUDY_TYPE},
+        #{JOIN_TYPE},
+        #{JOIN_DATE},
+        #{USER_STATUS},
+        #{ADMIN_LEVEL},
+        #{USER_POST}
+    </sql>
+    
+    <!-- 角色表 -->
+    <sql id="roleTableName">
+        SYS_ROLE
+    </sql>
+    
+    <!-- 列出某角色下的所有会员 -->
+    <select id="listAllUserInfoByUserUnit"  parameterType="pd" resultType="pd" >
+        select 
+            <include refid="Field"></include>
+        from 
+        <include refid="tableName"></include>
+        where 
+            USER_UNIT = #{USER_UNIT}
+    </select>
+    
+    <!-- 会员列表 -->
+    <select id="userlistPage" parameterType="page" resultType="pd">
+        select  
+              <include refid="Field"></include>
+        from <include refid="tableName"></include>
+        where 1=1
+        <if test="pd.keywords != null and pd.keywords!= ''"><!-- 关键词检索 -->
+            and (
+                USER_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+                )
+        </if>
+        order by USER_NAME
+    </select>
+    
+    <!-- 通过USERNAME获取数据 -->
+    <select id="findByUsername" parameterType="pd" resultType="pd">
+        select 
+            <include refid="Field"></include>
+        from 
+            <include refid="tableName"></include>
+        where 
+            USER_NAME = #{USER_NAME}
+    </select>
+    
+    <!-- 新增会员 -->
+    <insert id="saveU" parameterType="pd">
+        insert into <include refid="tableName"></include> (
+            <include refid="Field"></include>
+        ) values (
+            <include refid="FieldValue"></include>
+        )
+    </insert>
+    
+    <!-- 删除用户 -->
+    <delete id="deleteU" parameterType="pd">
+        delete from <include refid="tableName"></include> 
+        where 
+            ID_NUM = #{ID_NUM}
+    </delete>
+    
+    <!-- 修改 -->
+    <update id="editU" parameterType="pd">
+        update  <include refid="tableName"></include>
+        set USER_NAME                = #{USER_NAME},
+            USER_SEX                = #{USER_SEX},
+            USER_NATION             = #{USER_NATION},
+            ORIGIN_PLACE            = #{ORIGIN_PLACE},
+            BIRTH_PLACE             = #{BIRTH_PLACE},
+            BIRTH_DATE                 = #{BIRTH_DATE},
+            USER_UNIT                 = #{USER_UNIT},
+            USER_DEPART             = #{USER_DEPART},
+            USER_POLIT                = #{USER_POLIT},
+            PARTY_DATE                 = #{PARTY_DATE},
+            NATION_PARTY            = #{NATION_PARTY},
+            WORK_DATE                 = #{WORK_DATE},
+            HEALTH_STATUS           = #{HEALTH_STATUS},
+            MARRIAGE_STATUS         = #{MARRIAGE_STATUS},
+            INIT_EDUCATION          = #{INIT_EDUCATION},
+            INIT_MAJOR              = #{INIT_MAJOR},
+            GRADU_UNIVERS           = #{GRADU_UNIVERS},
+            GRADU_DATE              = #{GRADU_DATE},
+            STUDY_TYPE              = #{STUDY_TYPE},
+            JOIN_TYPE               = #{JOIN_TYPE},
+            JOIN_DATE               = #{JOIN_DATE},
+            USER_STATUS             = #{USER_STATUS},
+            ADMIN_LEVEL             = #{ADMIN_LEVEL},
+            USER_POST               = #{USER_POST}
+        where 
+            ID_NUM = #{ID_NUM}
+    </update>
+    
+    <!-- 通过ID获取数据 -->
+    <select id="findByUiId" parameterType="pd" resultType="pd">
+        select 
+            <include refid="Field"></include>
+        from 
+            <include refid="tableName"></include>
+        where 
+            ID_NUM = #{ID_NUM}
+    </select>
+    
+    <!-- 全部会员 -->
+    <select id="listAllUser" parameterType="pd" resultType="pd">
+        select 
+              <include refid="Field"></include>
+        from <include refid="tableName"></include>
+        where 1=1
+        <if test="keywords != null and keywords!= ''"><!-- 关键词检索 -->
+            and (
+                USER_NAME LIKE CONCAT(CONCAT('%', #{keywords}),'%')
+                )
+        </if>
+        <if test="userunit!=null and userunit!=''"><!-- 单位检索 -->
+            and USER_UNIT = #{userunit} 
+        </if>
+        <if test="userstatus!=null and userstatus!=''"><!-- 状态检索 -->
+            and USER_STATUS = #{userstatus} 
+        </if>
+        order by USER_NAME
+    </select>
+    
+    <!-- 批量删除用户 -->
+    <delete id="deleteAllU" parameterType="String">
+        delete from <include refid="tableName"></include>
+        where 
+            ID_NUM in
+               <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                  #{item}
+             </foreach>
+    </delete>
+    
+    <!-- 获取总数 -->
+    <select id="getUserInfoCount" parameterType="String" resultType="pd">
+        select 
+            count(ID_NUM) userInfoCount
+        from 
+        <include refid="tableName"></include>
+    </select>
+
+   <!-- 干部列表 -->
+    <select id="cadrelistPage" parameterType="page" resultType="pd">
+        select
+              <include refid="Field"></include>
+        from <include refid="tableName"></include>
+        where 1=1
+        <if test="pd.keywords != null and pd.keywords!= ''"><!-- 关键词检索 -->
+            and (
+                USER_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+                )
+        </if>
+        <if test="pd.userunit!=null and pd.userunit!=''"><!-- 单位检索 -->
+            and USER_UNIT = #{pd.userunit} 
+        </if>
+        <if test="pd.userstatus!=null and pd.userstatus!=''"><!-- 状态检索 -->
+            and USER_STATUS = #{pd.userstatus} 
+        </if>
+        <if test="pd.adminlevel==null || pd.adminlevel==''"><!-- 行政级别检索 -->
+            and ADMIN_LEVEL in ('正厅','副厅','正处','副处','正科','副科') 
+        </if>
+        <if test="pd.adminlevel!=null and pd.adminlevel!=''"><!-- 行政级别检索 -->
+            and ADMIN_LEVEL = #{pd.adminlevel} 
+        </if>
+        order by USER_NAME
+    </select>
+    
+    <!-- 全部干部 -->
+    <select id="listAllCadres" parameterType="pd" resultType="pd">
+        select 
+              <include refid="Field"></include>
+        from <include refid="tableName"></include>
+        where 1=1
+        <if test="keywords != null and keywords!= ''"><!-- 关键词检索 -->
+            and (
+                USER_NAME LIKE CONCAT(CONCAT('%', #{keywords}),'%')
+                )
+        </if>
+        <if test="userunit!=null and userunit!=''"><!-- 单位检索 -->
+            and USER_UNIT = #{userunit} 
+        </if>
+        <if test="userstatus!=null and userstatus!=''"><!-- 状态检索 -->
+            and USER_STATUS = #{userstatus} 
+        </if>
+        <if test="adminlevel==null || adminlevel==''"><!-- 行政级别检索 -->
+            and ADMIN_LEVEL in ('正厅','副厅','正处','副处','正科','副科') 
+        </if>
+        <if test="adminlevel!=null and adminlevel!=''"><!-- 行政级别检索 -->
+            and ADMIN_LEVEL = #{adminlevel} 
+        </if>
+        order by USER_NAME
+    </select>
+</mapper>

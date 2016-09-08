@@ -101,7 +101,7 @@
 												<label><input type='checkbox' name='ids' value="${user.ID_NUM }" id="${user.ID_NUM }" alt="${user.ID_NUM }" class="ace"/><span class="lbl"></span></label>
 											</td>
                                             <td class='center' style="width:50px;line-height:17.57px;padding-bottom: 1px;">${vs.index+1}</td>
-                                            <td class="center" style="width:100px;line-height:17.57px;padding-bottom: 1px;"><a href="javascript:void(0)" onclick="detailUser('${user.ID_NUM }');">${user.USER_NAME }</a></td>
+                                            <td class="center" style="width:100px;line-height:17.57px;padding-bottom: 1px;"><a href="javascript:void(0)" onclick="detailRetire('${user.ID_NUM }');">${user.USER_NAME }</a></td>
                                             <td class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">${user.ID_NUM }</td>
                                             <td class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">${user.USER_UNIT }</td>
                                             <td class="center" style="width:50px;line-height:17.57px;padding-bottom: 1px;">${user.USER_STATUS}</td>
@@ -307,12 +307,12 @@
 		}
 		
 	    //修改
-        function detailUser(user_id){
+        function detailRetire(user_id){
              top.jzts();
              var diag = new top.Dialog();
              diag.Drag=true;
              diag.Title ="离退休人员资料";
-             diag.URL = '<%=basePath%>retirement/goDetailU.do?ID_NUM='+user_id;
+             diag.URL = '<%=basePath%>retirement/goDetailR.do?ID_NUM='+user_id;
              diag.Width = 700;
              diag.Height = 619;
              diag.CancelEvent = function(){ //关闭事件
