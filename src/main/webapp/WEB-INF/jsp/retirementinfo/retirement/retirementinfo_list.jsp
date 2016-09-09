@@ -19,12 +19,46 @@
 <!-- 日期框 -->
 <link rel="stylesheet" href="static/ace/css/datepicker.css" />
 <style>
+#chenkbox {
+    position: relative;
+}
+#simple-table {
+    width: 100%;
+    border-collapse: collapse;
+	border-spacing: 0;
+    table-layout: fixed;
+    background-color: #fff;
+}
+#simple-table th {
+    font-size: 13px;
+    color: #000002;
+    height: 25px;
+    cursor: pointer;
+}
+#simple-table th, td {
+    text-align: center;
+    padding: 5px 10px;
+}
+#box {
+    position: absolute;
+    display: none;
+    background: #fff;
+    text-align: center;
+    top: 0;
+    background-color: #000;
+    background-color: rgba(0,0,0,0.8);
+    color: #fff;
+    height: 100%;
+    cursor: move;
+}
+#box p {
+    line-height: 2;
+}
  table{table-layout: fixed;}
  td{word-break: break-all; word-wrap:break-word;}
  </style>
 </head>
 <body class="no-skin">
-
 	<!-- /section:basics/navbar.layout -->
 	<div class="main-container" id="main-container">
 		<!-- /section:basics/sidebar -->
@@ -73,7 +107,7 @@
 								</c:if>
 							</tr>
 						</table>
-						<div style="width:1120px;overflow:auto;">
+						<div style="width:1120px;overflow:auto;" id = "chenkbox">
 						<!-- 检索  -->
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">
 							<thead>
@@ -81,13 +115,13 @@
 									<th class="center" style="width:35px;line-height:17.57px;padding-bottom: 1px;">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
-									<th class="center" style="width:50px;line-height:17.57px;padding-bottom: 1px;">序号</th>
-                                    <th class="center" style="width:100px;line-height:17.57px;padding-bottom: 1px;">姓名</th>
-									<th class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">身份证号</th>
-									<th class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">单位</th>
-									<th class="center" style="width:50px;line-height:17.57px;padding-bottom: 1px;">状态</th>
-									<th class="center" style="width:80px;line-height:17.57px;padding-bottom: 1px;">离退休时间</th>
-									<th class="center" style="width:80px;line-height:17.57px;padding-bottom: 1px;">操作</th>
+									<th onclick="sortTable('simple-table',1)" title="点击排序" class="center" style="width:50px;line-height:17.57px;padding-bottom: 1px;">序号</th>
+                                    <th onclick="sortTable('simple-table',2)" title="点击排序" class="center" style="width:100px;line-height:17.57px;padding-bottom: 1px;">姓名</th>
+									<th onclick="sortTable('simple-table',3)" title="点击排序" class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">身份证号</th>
+									<th onclick="sortTable('simple-table',4)" title="点击排序" class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">单位</th>
+									<th onclick="sortTable('simple-table',5)" title="点击排序" class="center" style="width:50px;line-height:17.57px;padding-bottom: 1px;">状态</th>
+									<th onclick="sortTable('simple-table',6)" title="点击排序" class="center" style="width:80px;line-height:17.57px;padding-bottom: 1px;">离退休时间</th>
+									<th onclick="sortTable('simple-table',7)" title="点击排序" class="center" style="width:80px;line-height:17.57px;padding-bottom: 1px;">操作</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -100,13 +134,22 @@
 											<td class='center' style="width: 30px;line-height:17.57px;padding-bottom: 1px;">
 												<label><input type='checkbox' name='ids' value="${user.ID_NUM }" id="${user.ID_NUM }" alt="${user.ID_NUM }" class="ace"/><span class="lbl"></span></label>
 											</td>
-                                            <td class='center' style="width:50px;line-height:17.57px;padding-bottom: 1px;">${vs.index+1}</td>
-                                            <td class="center" style="width:100px;line-height:17.57px;padding-bottom: 1px;"><a href="javascript:void(0)" onclick="detailRetire('${user.ID_NUM }');">${user.USER_NAME }</a></td>
-                                            <td class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">${user.ID_NUM }</td>
-                                            <td class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">${user.USER_UNIT }</td>
-                                            <td class="center" style="width:50px;line-height:17.57px;padding-bottom: 1px;">${user.USER_STATUS}</td>
-                                            <td class="center" style="width:80px;line-height:17.57px;padding-bottom: 1px;">${user.RETIRE_DATE}</td>
-											<td class="center" style="width:80px;line-height:17.57px;padding-bottom: 1px;">
+<%--                                             <td class='center' style="width:50px;line-height:17.57px;padding-bottom: 1px;">${vs.index+1}</td> --%>
+<%--                                             <td class="center" style="width:100px;line-height:17.57px;padding-bottom: 1px;"><a href="javascript:void(0)" onclick="detailRetire('${user.ID_NUM }');">${user.USER_NAME }</a></td> --%>
+<%--                                             <td class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">${user.ID_NUM }</td> --%>
+<%--                                             <td class="center" style="width:160px;line-height:17.57px;padding-bottom: 1px;">${user.USER_UNIT }</td> --%>
+<%--                                             <td class="center" style="width:50px;line-height:17.57px;padding-bottom: 1px;">${user.USER_STATUS}</td> --%>
+<%--                                             <td class="center" style="width:80px;line-height:17.57px;padding-bottom: 1px;">${user.RETIRE_DATE}</td> --%>
+<!-- 											<td class="center" style="width:80px;line-height:17.57px;padding-bottom: 1px;"> -->
+											
+											<td class='center' >${vs.index+1}</td>
+                                            <td class="center" ><a href="javascript:void(0)" onclick="detailRetire('${user.ID_NUM }');">${user.USER_NAME }</a></td>
+                                            <td class="center" >${user.ID_NUM }</td>
+                                            <td class="center" >${user.USER_UNIT }</td>
+                                            <td class="center" >${user.USER_STATUS}</td>
+                                            <td class="center" >${user.RETIRE_DATE}</td>
+											<td class="center" >
+											
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
@@ -167,6 +210,7 @@
 							</c:choose>
 							</tbody>
 						</table>
+						<div id = "box"> </div>
 						</div>
 						<div class="page-header position-relative" style="padding-bottom: 1px;">
 						<table style="width:100%;">
@@ -213,7 +257,9 @@
 	<script src="static/ace/js/chosen.jquery.js"></script>
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
-
+	<!-- 拖拽的实现 -->
+	<script type="text/javascript" src="static/js/zzsc.js"></script>	
+	
  	<script type="text/javascript">
 		$(top.hangge());
 		

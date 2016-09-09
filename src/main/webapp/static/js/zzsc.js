@@ -1,14 +1,46 @@
+function sortTable(table,idx){
+    var otable=document.getElementById(table),
+    	otody=otable,
+        otr=otody.rows,
+        tarr=[];
+     for (var i = 1; i <otr.length; i++) {
+           tarr[i-1]=otr[i];
+     };
+   
+     if(otody.sortCol==idx){
+        tarr.reverse();
+     }else{
+        tarr.sort(function(tr1,tr2){
+            var value1 = tr1.cells[idx].innerHTML; 
+            var value2 = tr2.cells[idx].innerHTML; 
+            if(!isNaN(value1)&&!isNaN(value2)){
+               return value1-value2;
+            }else{
+              return value1.localeCompare(value2);
+             }           
+        })
+     }
+     var fragment = document.createDocumentFragment();
+     for (var i = 0; i <tarr.length; i++) {
+         fragment.appendChild(tarr[i]);
+     };
+     otody.appendChild(fragment);
+     otody.sortCol=idx;
+  }
+
   //拖动
   function Drag(table){
     var ochek=document.getElementById("chenkbox"),
         otable=document.getElementById(table),
         otody=otable.tBodies[0],
-        oth=otody.getElementsByTagName("th"),
+        oth=otable.getElementsByTagName("th"),
         otd=otody.getElementsByTagName("td"),
         box=document.getElementById("box"),
         arrn=[];
-        for (var i = 0; i < otd.length; i++) {
-          otd[i].onmousedown=function(e){
+//       var flag = false;
+        for (var i = 0; i < oth.length; i++) {
+         oth[i].onmousedown=function(e){
+//        	 flag = false;
               var e=e||window.event,
                   target = e.target||e.srcElement,
                   thW = target.offsetWidth,
@@ -32,6 +64,7 @@
                   box.style.left=disX+"px";
                   //未完成 还有事件没写。
                   document.onmousemove=function(e){
+//                	  flag = true;
                       var e=e||window.event,
                       target = e.target||e.srcElement,
                       thW = target.offsetWidth;
@@ -46,20 +79,16 @@
                     window.getSelection ? window.getSelection().removeAllRanges() : doc.selection.empty();              
                   }
                   document.onmouseup=function(e){
-                     var index;
+//                	  if(!flag) return;
                      var e=e||window.event,
                          opr=box.getElementsByTagName("p"),
                          oboxl=box.offsetLeft+cdisX;
                         for (var i = 0; i < arrn.length; i++) {
                            if(arrn[i]<oboxl){
-                            index=i;
+                            var index=i;
                            }
                         };
                        for (var i = 0; i < rows.length; i++) {
-                          var oldw = rows[i].cells[_this.cellIndex].style.width;
-                          var oldn = rows[i].cells[index].style.width;
-                          rows[i].cells[index].style.width = oldw;
-                          rows[i].cells[_this.cellIndex].style.width = oldn;
                           rows[i].cells[_this.cellIndex].innerHTML="";
                           rows[i].cells[_this.cellIndex].innerHTML=rows[i].cells[index].innerHTML;
                           rows[i].cells[index].innerHTML="";
@@ -70,9 +99,8 @@
                        box.style.display="none";
                        document.onmousemove=null; 
                        document.onmouseup=null;
-                       document.onselectstart=function(){return false};
+                       document.onselectstart=function(){return false};     
                   }
-
              }
         };
         
