@@ -54,6 +54,7 @@
 #box p {
     line-height: 2;
 }
+$("#maincontent").width($("#pagenavigation").width() - 3);
  table{table-layout: fixed;}
  td{word-break: break-all; word-wrap:break-word;}
  </style>
@@ -107,7 +108,8 @@
 								</c:if>
 							</tr>
 						</table>
-						<div style="width:1120px;overflow:auto;" id = "chenkbox">
+<!-- 						<div style="width:1120px;overflow:auto;" id = "chenkbox"> -->
+						<div style="overflow:auto;" id="maincontent">
 						<!-- 检索  -->
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">
 							<thead>
@@ -212,10 +214,11 @@
 						</table>
 						<div id = "box"> </div>
 						</div>
-						<div class="page-header position-relative" style="padding-bottom: 1px;">
+						
+						<div id = "pagenavigation" class="page-header position-relative" style="padding-bottom: 1px;">
 						<table style="width:100%;">
 							<tr>
-								<td style="vertical-align:top;">
+								<td style="vertical-align:top; float: left; margin-left: 0px; pading-left = 0px">
 									<c:if test="${QX.add == 1 }">
 									<a class="btn btn-mini btn-success" onclick="add();">新增</a>
 									</c:if>
